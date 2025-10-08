@@ -1,60 +1,15 @@
-import React from 'react'
+import Footer from '../components/Footer'
+import Header from '../components/Header'
+import { useClerk, useUser } from '@clerk/clerk-react';
 
 const LandingPage = () => {
+
+  const {user} = useUser();
+  const {openSignIn} = useClerk();
   return (
    <div className="bg-white">
-    {/* Header */}
-    <header className="bg-white border-b sticky top-0 z-50">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="flex items-center justify-between h-16">
-      {/* Logo */}
-      <a href="#" className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition-colors">
-        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-          <span className="text-white font-bold text-sm">UQ</span>
-        </div>
-        <span className="text-xl font-semibold">UniQuest</span>
-      </a>
 
-      {/* Navigation */}
-      <nav className="hidden md:flex items-center space-x-6">
-        <a href="#dashboard" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
-          Dashboard
-        </a>
-        <a href="#universities" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
-          Universities
-        </a>
-        <a href="#scholarships" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
-          Scholarships
-        </a>
-        <a href="#ai-assistant" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
-          AI Assistant
-        </a>
-      </nav>
-
-      {/* User menu (Logged in version) */}
-      <div className="hidden md:flex items-center space-x-4">
-        <span className="text-sm text-gray-700">
-          Hello, Sarah
-        </span>
-        <a href="#logout" className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
-          Logout
-        </a>
-      </div>
-
-      {/* Guest menu (Uncomment this block and comment the above to simulate logged-out view) */}
-      {/*
-      <div className="hidden md:flex items-center space-x-4">
-        <a href="#login" className="text-sm text-gray-700 hover:text-blue-600 transition-colors">
-          Login
-        </a>
-        <a href="#register" className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors">
-          Sign Up
-        </a>
-      </div>
-      */}
-    </div>
-  </div>
-</header>
+    <Header />
 
       {/* Hero Section */}
 <section id="home" className="relative bg-gradient-to-r from-blue-50 to-indigo-50 pt-16 pb-20">
@@ -212,50 +167,12 @@ const LandingPage = () => {
   </div>
 </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">UniQuest</h3>
-              <p className="text-gray-400">
-                Your AI-powered companion for international education. From university selection to visa guidance.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Platform</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li>University Matching</li>
-                <li>AI Assistant</li>
-                <li>Application Tracking</li>
-                <li>Scholarship Search</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Support</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li>Visa Guidance</li>
-                <li>SOP Helper</li>
-                <li>Interview Prep</li>
-                <li>Pre-departure</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li>About Us</li>
-                <li>Contact</li>
-                <li>Privacy Policy</li>
-                <li>Terms of Service</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
-            &copy; {new Date().getFullYear()} UniQuest. Empowering international students worldwide.
-          </div>
-        </div>
-      </footer>
-    </div>  )
+  <Footer/>
+
+</div>
+
+
+  )
 }
 
 export default LandingPage
