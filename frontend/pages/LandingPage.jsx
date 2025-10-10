@@ -1,6 +1,53 @@
 import React from 'react'
+import { Search, Brain, Award, FileText, Map, MessageCircle } from "lucide-react";
 
 const LandingPage = () => {
+
+const devs = [
+  { name: 'Anurag Chakraborty', initials: 'AC', gradient: 'from-blue-500 to-purple-600' },
+  { name: 'Shriyash Parandkar', initials: 'SP', gradient: 'from-green-500 to-teal-600' },
+  { name: 'Vishal Sharma', initials: 'VS', gradient: 'from-orange-500 to-red-600' },
+  { name: 'Shaunak Pawar', initials: 'SP', gradient: 'from-purple-500 to-pink-600' },
+  { name: 'Yashaswini Pardeshi', initials: 'YP', gradient: 'from-indigo-500 to-blue-600' },
+];
+const services = [
+  {
+    title: "University Matching",
+    desc: "AI-powered university recommendations based on your academic profile, preferences, and career goals.",
+    color: "blue",
+    icon: Search,
+  },
+  {
+    title: "AI Assistant",
+    desc: "24/7 AI chat support to answer your questions about applications, requirements, and study abroad processes.",
+    color: "yellow",
+    icon: Brain,
+  },
+  {
+    title: "Scholarship Search",
+    desc: "Discover funding opportunities and scholarships tailored to your academic background and financial needs.",
+    color: "green",
+    icon: Award,
+  },
+  {
+    title: "Application Tracking",
+    desc: "Track your application progress and receive real-time updates on submissions and results.",
+    color: "blue",
+    icon: FileText,
+  },
+  {
+    title: "Visa Guidance",
+    desc: "Step-by-step visa application assistance and documentation support for your destination country.",
+    color: "green",
+    icon: Map,
+  },
+  {
+    title: "SOP & Interview Prep",
+    desc: "AI-powered assistance for creating strong SOPs and preparing for university interviews.",
+    color: "yellow",
+    icon: MessageCircle,
+  },
+];
   return (
    <div className="bg-white">
     {/* Header */}
@@ -9,7 +56,7 @@ const LandingPage = () => {
     <div className="flex items-center justify-between h-16">
       {/* Logo */}
       <a href="#" className="flex items-center space-x-2 text-black hover:text-blue-700 transition-colors">
-        <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+        <div className="w-8 h-8 bg-black  rounded-lg flex items-center justify-center">
           <span className="text-white font-bold text-sm">UQ</span>
         </div>
         <span className="text-xl font-semibold">UniQuest</span>
@@ -59,7 +106,7 @@ const LandingPage = () => {
       {/* Hero Section */}                                       
 <section id="home" className="relative bg-gradient-to-r from-blue-50 to-indigo-50 pt-16 pb-20">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <div className="grid  lg:grid-cols-2 gap-12 items-center">
       {/* Content */}
       <div className="space-y-8">
         <div className="space-y-6">
@@ -161,24 +208,19 @@ const LandingPage = () => {
       </p>
     </div>
 
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {/* Service Cards */}
-      {[
-        { title: 'University Matching', desc: 'AI-powered university recommendations...', color: 'blue' },
-        { title: 'AI Assistant', desc: '24/7 AI chat support...', color: 'purple' },
-        { title: 'Scholarship Search', desc: 'Discover funding opportunities...', color: 'green' },
-        { title: 'Application Tracking', desc: 'Track your application progress...', color: 'orange' },
-        { title: 'Visa Guidance', desc: 'Step-by-step visa application...', color: 'indigo' },
-        { title: 'SOP & Interview Prep', desc: 'AI-powered assistance for SOP...', color: 'red' },
-      ].map((service, i) => (
-        <div key={i} className="bg-white rounded-xl p-8 shadow-lg border hover:shadow-xl transition-shadow">
-          <div className={`w-12 h-12 bg-${service.color}-100 rounded-lg flex items-center justify-center mb-6`}>
-            <svg className={`h-6 w-6 text-${service.color}-600`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10" />
-            </svg>
+     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {services.map(({ title, desc, color, icon: Icon }, i) => (
+        <div
+          key={i}
+          className="bg-white rounded-xl p-8 shadow-lg border hover:shadow-xl transition-shadow"
+        >
+          <div
+            className={`w-12 h-12 flex items-center justify-center rounded-lg mb-6`}
+          >
+            <Icon className={`h-8 w-8  text-${color}-500`} />
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">{service.title}</h3>
-          <p className="text-gray-600">{service.desc}</p>
+          <h3 className="text-xl font-semibold text-gray-900 mb-4">{title}</h3>
+          <p className="text-gray-600">{desc}</p>
         </div>
       ))}
     </div>
