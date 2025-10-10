@@ -64,7 +64,7 @@ const services = [
 
       {/* Navigation */}
       <nav className="hidden md:flex items-center space-x-6">
-        <a href="#dashboard" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-black transition-colors">
+        <a href="dashboard" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-black transition-colors">
           Dashboard
         </a>
         <a href="#universities" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-black transition-colors">
@@ -73,7 +73,7 @@ const services = [
         <a href="#scholarships" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-black transition-colors">
           Scholarships
         </a>
-        <a href="#ai-assistant" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-black transition-colors">
+        <a href="ai-chat" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-black transition-colors">
           AI Assistant
         </a>
       </nav>
@@ -120,19 +120,27 @@ const services = [
             preferences, and career goals.
           </p>
         </div>
+<div className="flex flex-col sm:flex-row gap-4">
+  {/* Primary Button */}
+  <button className="group bg-black text-white text-lg px-8 py-4 rounded-lg flex items-center justify-center border border-transparent transition-all duration-300 hover:bg-slate-200 hover:text-black hover:border-black">
+    <svg
+      className="mr-2 h-5 w-5 transition-transform duration-300 group-hover:rotate-12"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <path d="M21 21l-4.35-4.35M17 10A7 7 0 1 1 3 10a7 7 0 0 1 14 0z" />
+    </svg>
+    Start Your Quest
+  </button>
 
-        <div className="flex flex-col sm:flex-row gap-4">
-          <button className="bg-black text-white text-lg px-8 py-4 rounded-lg flex items-center justify-center hover:bg-blue-700 transition">
-            {/* Search Icon Placeholder */}
-            <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path d="M21 21l-4.35-4.35M17 10A7 7 0 1 1 3 10a7 7 0 0 1 14 0z" />
-            </svg>
-            Start Your Quest
-          </button>
-          <button className="border border-black text-black text-lg px-8 py-4 rounded-lg hover:bg-blue-50 transition">
-            Learn More
-          </button>
-        </div>
+  {/* Secondary Button */}
+  <button className="border border-black text-black text-lg px-8 py-4 rounded-lg transition-all duration-300 hover:bg-black hover:text-white hover:shadow-md">
+    Learn More
+  </button>
+</div>
+
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-8 pt-8">
