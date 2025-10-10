@@ -8,8 +8,8 @@ const LandingPage = () => {
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div className="flex items-center justify-between h-16">
       {/* Logo */}
-      <a href="#" className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition-colors">
-        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+      <a href="#" className="flex items-center space-x-2 text-black hover:text-blue-700 transition-colors">
+        <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
           <span className="text-white font-bold text-sm">UQ</span>
         </div>
         <span className="text-xl font-semibold">UniQuest</span>
@@ -17,16 +17,16 @@ const LandingPage = () => {
 
       {/* Navigation */}
       <nav className="hidden md:flex items-center space-x-6">
-        <a href="#dashboard" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+        <a href="#dashboard" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-black transition-colors">
           Dashboard
         </a>
-        <a href="#universities" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+        <a href="#universities" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-black transition-colors">
           Universities
         </a>
-        <a href="#scholarships" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+        <a href="#scholarships" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-black transition-colors">
           Scholarships
         </a>
-        <a href="#ai-assistant" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+        <a href="#ai-assistant" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-black transition-colors">
           AI Assistant
         </a>
       </nav>
@@ -44,19 +44,19 @@ const LandingPage = () => {
       {/* Guest menu (Uncomment this block and comment the above to simulate logged-out view) */}
       {/*
       <div className="hidden md:flex items-center space-x-4">
-        <a href="#login" className="text-sm text-gray-700 hover:text-blue-600 transition-colors">
+        <a href="#login" className="text-sm text-gray-700 hover:text-black transition-colors">
           Login
         </a>
-        <a href="#register" className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors">
+        <a href="#register" className="bg-black text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors">
           Sign Up
         </a>
       </div>
       */}
     </div>
   </div>
-</header>
+</header> 
 
-      {/* Hero Section */}
+      {/* Hero Section */}                                       
 <section id="home" className="relative bg-gradient-to-r from-blue-50 to-indigo-50 pt-16 pb-20">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -65,7 +65,7 @@ const LandingPage = () => {
         <div className="space-y-6">
           <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
             Find Your Perfect
-            <span className="text-blue-600 block">University Match</span>
+            <span className="text-black block">University Match</span>
           </h1>
           <p className="text-xl text-gray-600 leading-relaxed">
             Discover the ideal university for your international study journey. 
@@ -75,14 +75,14 @@ const LandingPage = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          <button className="bg-blue-600 text-white text-lg px-8 py-4 rounded-lg flex items-center justify-center hover:bg-blue-700 transition">
+          <button className="bg-black text-white text-lg px-8 py-4 rounded-lg flex items-center justify-center hover:bg-blue-700 transition">
             {/* Search Icon Placeholder */}
             <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path d="M21 21l-4.35-4.35M17 10A7 7 0 1 1 3 10a7 7 0 0 1 14 0z" />
             </svg>
             Start Your Quest
           </button>
-          <button className="border border-blue-600 text-blue-600 text-lg px-8 py-4 rounded-lg hover:bg-blue-50 transition">
+          <button className="border border-black text-black text-lg px-8 py-4 rounded-lg hover:bg-blue-50 transition">
             Learn More
           </button>
         </div>
@@ -136,7 +136,7 @@ const LandingPage = () => {
         {/* Floating Card */}
         <div className="absolute -bottom-8 -left-8 bg-white rounded-xl shadow-lg p-6 border">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
               {/* Star Icon */}
               <svg className="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.561-.955L10 0l2.951 5.955 6.561.955-4.756 4.635 1.122 6.545z" />
@@ -198,7 +198,7 @@ const LandingPage = () => {
           { name: 'Shriyash Parandkar', initials: 'SP', from: 'green', to: 'teal' },
           { name: 'Vishal Sharma', initials: 'VS', from: 'orange', to: 'red' },
           { name: 'Shaunak Pawar', initials: 'SP', from: 'purple', to: 'pink' },
-          { name: 'Yashasvini Pardeshi', initials: 'YP', from: 'indigo', to: 'blue' },
+          { name: 'Yashaswini Pardeshi', initials: 'YP', from: 'indigo', to: 'blue' },
         ].map((dev, i) => (
           <div key={i} className="text-center">
             <div className={`w-20 h-20 bg-gradient-to-br from-${dev.from}-500 to-${dev.to}-600 rounded-full flex items-center justify-center mx-auto mb-4`}>
