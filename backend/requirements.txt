@@ -1,20 +1,57 @@
 # Django Framework
 Django>=5.1.1
 
-# Python WSGI HTTP Server for UNIX
-gunicorn>=23.0.0
-
-# Environment variables management
-python-decouple>=3.8
-
-# Django REST Framework for API development
+# Django REST Framework
 djangorestframework>=3.15.2
+
+# JWT Authentication
+djangorestframework-simplejwt>=5.3.0
+
+# API Documentation
+drf-spectacular>=0.27.0
 
 # CORS headers for frontend integration
 django-cors-headers>=4.4.0
 
-# Development dependencies
-python-dotenv>=1.0.1
+# Environment variables management (12-factor)
+django-environ>=0.11.2
+
+# SQLite is built into Python - no additional driver needed
+
+# Data processing libraries
+duckdb>=0.10.0
+polars>=0.20.0
+pyarrow>=15.0.0
+pandas>=2.0.0
+
+# HTTP requests for data ingestion
+requests>=2.31.0
+
+# Python WSGI HTTP Server for UNIX
+gunicorn>=23.0.0
 
 # Image processing (for file uploads)
 Pillow>=10.4.0
+
+# JSON logging (optional)
+python-json-logger>=2.0.7
+
+# Development and Testing
+pytest>=8.0.0
+pytest-django>=4.8.0
+pytest-factoryboy>=2.6.0
+factory-boy>=3.3.0
+faker>=24.0.0
+
+# Code quality tools
+black>=24.0.0
+isort>=5.13.0
+flake8>=7.0.0
+mypy>=1.8.0
+bandit>=1.7.5
+
+# Pre-commit hooks
+pre-commit>=3.6.0
+
+# Development dependencies
+python-dotenv>=1.0.1
