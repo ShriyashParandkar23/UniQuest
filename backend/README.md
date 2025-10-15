@@ -1,344 +1,530 @@
-# UniQuest Backend - Employee Onboarding Guide
+# UniQuest Backend
 
-Welcome to the UniQuest Backend project! This guide will help you get started with the development environment quickly and smoothly.
+A Django 5 + DRF backend for university recommendation system with hybrid architecture - SQLite for transactional data and file-backed datasets (Parquet/CSV) for university data.
+
+## 🏗️ Architecture
+
+- **Transactional Data**: SQLite for users, profiles, preferences, recommendations, and feedback
+- **University Dataset**: File-backed Parquet/CSV with DuckDB + Polars for fast queries
+- **Data Sources**: Kaggle datasets for universities + optional Webometrics rankings
+- **Authentication**: JWT with djangorestframework-simplejwt
+- **API Documentation**: OpenAPI 3.0 with drf-spectacular
 
 ## 📋 Prerequisites
 
-Before you begin, ensure you have the following installed on your system:
+- Python 3.11+
+- Git
+- Node.js 18+ (for frontend development)
 
-- **Python 3.9 or higher** - [Download Python](https://www.python.org/downloads/)
-- **Git** - [Download Git](https://git-scm.com/downloads/)
-- **pip** (Python package manager) - Usually comes with Python
+## ⚡ Initial Setup
 
-### Verify Prerequisites
-
-```bash
-# Check Python version
-python3 --version  # Should show 3.9 or higher
-
-# Check Git
-git --version
-
-# Check pip
-pip3 --version
-```
-
-## 🚀 Quick Start Setup
-
-### Step 1: Clone the Repository
+### 1. Clone the Repository
 
 ```bash
 git clone <repository-url>
 cd UniQuest/backend
 ```
 
-### Step 2: Set Up Python Virtual Environment
-
-**Why Virtual Environment?** It isolates project dependencies and prevents conflicts with other Python projects.
+### 2. Create Virtual Environment
 
 ```bash
-# Create virtual environment
-python3 -m venv venv
-
-# Activate virtual environment
-# On macOS/Linux:
-source venv/bin/activate
-
-# On Windows:
-# venv\Scripts\activate
-
-# Your terminal prompt should now show (venv)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-### Step 3: Install Dependencies
+### 3. Install Dependencies
 
 ```bash
-# Ensure you're in the backend directory and virtual environment is activated
 pip install -r requirements.txt
 ```
 
-### Step 4: Configure Environment Variables
-
-1. **Copy Configuration Template**
-   ```bash
-   cp config_template.txt .env
-   ```
-
-2. **Edit .env File**
-   ```bash
-   # Use your preferred text editor
-   nano .env
-   # OR
-   vim .env
-   # OR open in VS Code
-   code .env
-   ```
-
-3. **Update Configuration**
-   ```env
-   # Generate a new secret key using: python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
-   SECRET_KEY=your-generated-secret-key-here
-   DEBUG=True
-   ALLOWED_HOSTS=localhost,127.0.0.1
-   
-   # SQLite database is used by default (no additional configuration needed)
-   # Database file will be created automatically as 'db.sqlite3' in the backend directory
-   ```
-
-### Step 5: Run Database Migrations
+### 4. Environment Configuration
 
 ```bash
-# Create migration files
-python manage.py makemigrations
+cp env.example .env
+# Edit .env if needed (SQLite uses default db.sqlite3)
+```
 
-# Apply migrations to database (creates db.sqlite3 file automatically)
+### 5. Initialize Database
+
+```bash
 python manage.py migrate
-```
-
-### Step 6: Create Superuser (Admin Account)
-
-```bash
 python manage.py createsuperuser
-
-# Follow prompts to set:
-# - Username: admin
-# - Email address: admin@uniquest.com
-# - Password: admin2025
-# - Confirm password: admin2025
 ```
 
-**📝 Django Admin Credentials:**
-- **URL**: `http://127.0.0.1:8000/admin/`
-- **Username**: `admin`
-- **Password**: `admin2025`
-
-> **Note**: These are development credentials. Use strong, unique credentials in production.
-
-### Step 7: Start Development Server
+### 6. Create Demo Data (Optional)
 
 ```bash
-python manage.py runserver
-
-# Server will start at: http://127.0.0.1:8000/
+python manage.py shell < create_demo_data.py
+# Creates demo users: alice@example.com, bob@example.com, carol@example.com
+# Password for all: demo123
 ```
 
-## ✅ Verify Installation
+## 🚀 Local Development Server
 
-### 1. Check Health Endpoint
-Open your browser and visit: `http://127.0.0.1:8000/api/health/`
+### Option 1: Native Python Server
 
-You should see:
-```json
-{
-  "status": "healthy",
-  "message": "UniQuest Backend is running!"
-}
-```
-
-### 2. Access Django Admin
-Visit: `http://127.0.0.1:8000/admin/`
-Log in with the superuser credentials you created.
-
-## 📁 Project Structure
-
-```
-backend/
-├── manage.py                 # Django management script
-├── requirements.txt          # Python dependencies
-├── config_template.txt       # Environment variables template
-├── .env                      # Environment variables (you create this)
-├── db.sqlite3               # SQLite database (created automatically)
-├── README.md                # This file
-├── uniquest_backend/        # Main Django project
-│   ├── __init__.py
-│   ├── settings.py          # Django settings
-│   ├── urls.py              # URL routing
-│   ├── wsgi.py              # WSGI configuration
-│   └── asgi.py              # ASGI configuration
-└── venv/                    # Virtual environment (created by you)
-```
-
-## 🔧 Development Workflow
-
-### Daily Development Routine
-
-1. **Activate Virtual Environment**
+1. **Start the development server**:
    ```bash
+   python manage.py runserver
+   # Or use the Makefile
+   make run
+   ```
+
+2. **Access the application**:
+   - **API Docs**: http://localhost:8000/api/docs/
+   - **Admin Panel**: http://localhost:8000/admin/
+   - **Health Check**: http://localhost:8000/api/healthz/
+
+3. **Development workflow**:
+   ```bash
+   # Code formatting
+   make format
+   
+   # Linting
+   make lint
+   
+   # Run tests
+   make test
+   
+   # Reset database (development only)
+   make db-reset
+   
+   # Apply migrations
+   make migrate
+   ```
+
+### Option 2: Docker Development
+
+1. **Start with Docker Compose**:
+   ```bash
+   make docker-dev
+   # Or manually:
+   docker-compose -f docker-compose.dev.yml up -d
+   ```
+
+2. **Initialize database in Docker**:
+   ```bash
+   docker-compose -f docker-compose.dev.yml exec web python manage.py migrate
+   docker-compose -f docker-compose.dev.yml exec web python manage.py createsuperuser
+   ```
+
+3. **View logs**:
+   ```bash
+   docker-compose -f docker-compose.dev.yml logs -f web
+   ```
+
+4. **Stop services**:
+   ```bash
+   docker-compose -f docker-compose.dev.yml down
+   ```
+
+### Development Database Management
+
+```bash
+# Apply new migrations
+make migrate
+
+# Create demo data
+make seed
+
+# Reset database (WARNING: destroys all data)
+make db-reset
+
+# Backup database
+python manage.py dumpdata > backup.json
+
+# Restore database
+python manage.py loaddata backup.json
+```
+
+## 🏭 Production Server Setup
+
+### Option 1: Docker Production Deployment
+
+1. **Prepare environment**:
+   ```bash
+   # Copy and configure production environment
+   cp env.example .env
+   
+   # Edit .env with production values:
+   # - Set DEBUG=False
+   # - Set proper SECRET_KEY
+   # - Set ALLOWED_HOSTS
+   # - Set DB_NAME=db_production.sqlite3
+   ```
+
+2. **Build and deploy**:
+   ```bash
+   # Build production image
+   make docker-build
+   
+   # Start production services
+   docker-compose up -d
+   ```
+
+3. **Initialize production database**:
+   ```bash
+   # Run migrations
+   docker-compose exec web python manage.py migrate
+   
+   # Create superuser
+   docker-compose exec web python manage.py createsuperuser
+   
+   # Collect static files
+   docker-compose exec web python manage.py collectstatic --noinput
+   ```
+
+4. **Production maintenance**:
+   ```bash
+   # View logs
+   docker-compose logs -f web
+   
+   # Restart services
+   docker-compose restart
+   
+   # Stop services
+   docker-compose down
+   
+   # Backup database
+   docker-compose exec web python manage.py dumpdata > backup_$(date +%Y%m%d).json
+   ```
+
+### Option 2: Manual Production Deployment
+
+1. **Server setup**:
+   ```bash
+   # Install Python 3.11+ on your server
+   # Clone repository
+   git clone <repository-url>
    cd UniQuest/backend
-   source venv/bin/activate  # On macOS/Linux
-   # venv\Scripts\activate   # On Windows
-   ```
-
-2. **Pull Latest Changes**
-   ```bash
-   git pull origin main
-   ```
-
-3. **Install New Dependencies** (if requirements.txt changed)
-   ```bash
+   
+   # Create production environment
+   python -m venv venv
+   source venv/bin/activate
    pip install -r requirements.txt
    ```
 
-4. **Run Migrations** (if models changed)
+2. **Configure environment**:
    ```bash
-   python manage.py makemigrations
+   # Set production environment variables
+   export DJANGO_ENVIRONMENT=prod
+   export DEBUG=False
+   export SECRET_KEY=your-very-secret-key
+   export ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
+   export DB_NAME=db_production.sqlite3
+   ```
+
+3. **Initialize production database**:
+   ```bash
    python manage.py migrate
+   python manage.py createsuperuser
+   python manage.py collectstatic --noinput
    ```
 
-5. **Start Development Server**
+4. **Start with Gunicorn**:
    ```bash
-   python manage.py runserver
+   # Install Gunicorn (already in requirements.txt)
+   gunicorn --bind 0.0.0.0:8000 --workers 4 uniquest_backend.wsgi:application
+   
+   # Or use systemd service (recommended)
+   # Create /etc/systemd/system/uniquest.service
    ```
 
-### Creating New Django Apps
+5. **Nginx Configuration** (recommended):
+   ```nginx
+   server {
+       listen 80;
+       server_name yourdomain.com;
+       
+       location /static/ {
+           alias /path/to/UniQuest/backend/staticfiles/;
+       }
+       
+       location /media/ {
+           alias /path/to/UniQuest/backend/media/;
+       }
+       
+       location / {
+           proxy_pass http://127.0.0.1:8000;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+       }
+   }
+   ```
 
-```bash
-# Create a new Django app
-python manage.py startapp app_name
+### Production Monitoring
 
-# Don't forget to add it to INSTALLED_APPS in settings.py
+1. **Health checks**:
+   ```bash
+   curl https://yourdomain.com/api/healthz/
+   ```
+
+2. **Log monitoring**:
+   ```bash
+   # View application logs
+   tail -f /var/log/uniquest/django.log
+   
+   # Or with Docker
+   docker-compose logs -f web
+   ```
+
+3. **Database maintenance**:
+   ```bash
+   # Regular backups (add to cron)
+   python manage.py dumpdata > backup_$(date +%Y%m%d_%H%M%S).json
+   
+   # Database optimization (SQLite)
+   python manage.py dbshell
+   VACUUM;
+   ANALYZE;
+   ```
+
+## 📊 Dataset Management
+
+### Data Ingestion Pipeline
+
+#### Setting Up Kaggle Dataset Access
+
+1. **Create Kaggle Account**: Sign up at [kaggle.com](https://www.kaggle.com/)
+
+2. **Get Kaggle API Credentials**:
+   - Go to Kaggle Account Settings
+   - Click "Create New API Token"
+   - Download `kaggle.json` file
+
+3. **Set Environment Variables**:
+   ```bash
+   export KAGGLE_USERNAME=your_username
+   export KAGGLE_KEY=your_api_key
+   ```
+
+#### Download University Dataset
+
+1. **Download Kaggle dataset**:
+   ```bash
+   python manage.py download_dataset --version 2025.09 --kaggle-dataset "username/dataset-name"
+   ```
+   
+   **Example university datasets on Kaggle**:
+   - `mylesoneill/world-university-rankings`
+   - `theriley106/university-statistics`
+   - `imtkaggleteam/global-university-ranking`
+
+2. **Load Webometrics rankings** (optional):
+   ```bash
+   python manage.py load_webometrics --version 2025.09 --csv /path/to/webometrics.csv
+   ```
+
+3. **Curate and merge datasets**:
+   ```bash
+   python manage.py curate --version 2025.09
+   ```
+
+4. **Activate dataset version**:
+   ```bash
+   python manage.py activate --version 2025.09
+   ```
+
+5. **Validate dataset**:
+   ```bash
+   python manage.py validate --version 2025.09 --verbose
+   ```
+
+### Dataset Structure
+
+```
+/data/
+├── raw/
+│   ├── openalex/2025.09/institutions.jsonl
+│   └── webometrics/2025.09/webometrics.jsonl
+├── curated/
+│   └── 2025.09/
+│       ├── institutions.parquet
+│       └── search_index.parquet
+└── current -> 2025.09
 ```
 
-### Database Operations
+### Quick Dataset Setup
 
 ```bash
-# Create migrations after model changes
-python manage.py makemigrations
+# Complete ingestion pipeline
+make ingest
 
-# Apply migrations
-python manage.py migrate
+# Activate latest version
+make activate
 
-# Reset database (careful - this deletes all data!)
-python manage.py flush
-
-# Create database backup
-cp db.sqlite3 db_backup_$(date +%Y%m%d_%H%M%S).sqlite3
-
-# Restore database backup
-cp db_backup_YYYYMMDD_HHMMSS.sqlite3 db.sqlite3
+# Validate dataset
+make validate
 ```
 
-### Running Tests
+## 🔧 API Endpoints
+
+### Authentication
+- `POST /api/auth/login/` - Login (JWT)
+- `POST /api/auth/refresh/` - Refresh token
+- `POST /api/auth/verify/` - Verify token
+
+### Student Profiles
+- `GET /api/students/me/` - Get profile
+- `PATCH /api/students/me/` - Update profile
+
+### Preferences
+- `GET /api/students/preferences/` - Get preferences
+- `PUT /api/students/preferences/` - Update preferences
+
+### Universities (Dataset-backed)
+- `GET /api/universities/?q=stanford&country=US` - Search universities
+- `GET /api/universities/{openalex_id}/` - University details
+
+### Recommendations (Hybrid)
+- `POST /api/recommendations/run/` - Generate recommendations
+- `GET /api/recommendations/` - List user's recommendations
+
+### Feedback
+- `POST /api/feedback/recommendations/{id}/` - Provide feedback
+- `GET /api/feedback/` - List user's feedback
+
+### System
+- `GET /api/healthz/` - Health check
+- `GET /api/ingestion/runs/` - Ingestion history
+
+### API Documentation
+- `GET /api/docs/` - Swagger UI
+- `GET /api/redoc/` - ReDoc UI
+- `GET /api/schema/` - OpenAPI schema
+
+## 🧪 Testing
 
 ```bash
 # Run all tests
-python manage.py test
+make test
 
 # Run specific app tests
-python manage.py test app_name
+python manage.py test apps.students --settings=uniquest_backend.settings.test
 
-# Run with coverage (install coverage first: pip install coverage)
-coverage run --source='.' manage.py test
+# Run with coverage
+coverage run --source='.' manage.py test --settings=uniquest_backend.settings.test
 coverage report
 ```
 
-## 🐛 Troubleshooting
+## 🏗️ Project Structure
 
-### Common Issues and Solutions
-
-#### 1. "ModuleNotFoundError: No module named 'django'"
-**Solution:** Activate your virtual environment
-```bash
-source venv/bin/activate  # macOS/Linux
-# venv\Scripts\activate   # Windows
+```
+backend/
+├── apps/
+│   ├── users/              # User authentication
+│   ├── students/           # Student profiles
+│   ├── preferences/        # User preferences
+│   ├── recommendations/    # Hybrid recommendations
+│   ├── feedback/          # Recommendation feedback
+│   └── dataset/           # Dataset management & university search
+├── uniquest_backend/
+│   ├── settings/          # Environment-specific settings
+│   │   ├── base.py
+│   │   ├── dev.py
+│   │   ├── prod.py
+│   │   └── test.py
+│   ├── urls.py
+│   └── exceptions.py      # Custom error handling
+├── db/                    # SQLite database files
+├── data/                  # Dataset storage
+├── tests/                 # Test utilities and fixtures
+├── docker-compose.yml     # Production Docker setup
+├── docker-compose.dev.yml # Development Docker setup
+├── Dockerfile
+├── Makefile              # Development commands
+└── requirements.txt
 ```
 
-#### 2. "Port 8000 is already in use"
-**Solution:** Use a different port
+## 🔧 Environment Configuration
+
+### Development (.env)
 ```bash
-python manage.py runserver 8001
+SECRET_KEY=django-insecure-dev-key
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+DB_NAME=db.sqlite3
+DATASET_BASE_PATH=./data
+
+# Kaggle API credentials (for dataset downloads)
+KAGGLE_USERNAME=your_kaggle_username
+KAGGLE_KEY=your_kaggle_api_key
 ```
 
-#### 3. "django.db.utils.OperationalError: database is locked"
-**Solution:** 
+### Production (.env)
 ```bash
-# Close any open database connections
-# Make sure no other Django processes are running
-ps aux | grep manage.py
-# Kill any running processes if found
+SECRET_KEY=your-very-secure-secret-key
+DEBUG=False
+ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
+DB_NAME=db_production.sqlite3
+DATASET_BASE_PATH=/data
+CORS_ALLOWED_ORIGINS=https://yourdomain.com
+
+# Kaggle API credentials (for dataset downloads)
+KAGGLE_USERNAME=your_kaggle_username
+KAGGLE_KEY=your_kaggle_api_key
 ```
 
-#### 4. Migration Issues
-**Solution:** 
+## 📈 Monitoring & Maintenance
+
+### Health Monitoring
+- **Health endpoint**: `GET /api/healthz/`
+- **Database status**: Included in health check
+- **Dataset status**: Validates current dataset version
+- **Ingestion history**: Track all data processing runs
+
+### Regular Maintenance Tasks
 ```bash
-# Delete migration files (keep __init__.py)
-# Reset migrations
-python manage.py makemigrations --empty app_name
-python manage.py migrate --fake-initial
+# Database backup (daily)
+python manage.py dumpdata > backup_$(date +%Y%m%d).json
+
+# Log rotation (configure with logrotate)
+# Dataset validation (weekly)
+python manage.py validate --verbose
+
+# Static file updates
+python manage.py collectstatic --noinput
 ```
 
-#### 5. "SECRET_KEY" not found error
-**Solution:** 
-```bash
-# Make sure .env file exists and contains SECRET_KEY
-# Generate a new secret key:
-python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
-# Add it to your .env file
-```
+## 🤝 Contributing
 
-### Development Tools
+1. Fork the repository
+2. Create a feature branch
+3. Make changes and add tests
+4. Run `make lint` and `make test`
+5. Submit a pull request
 
-```bash
-# Check for issues
-python manage.py check
+## 📝 License
 
-# Shell with Django context
-python manage.py shell
+MIT License - see LICENSE file for details.
 
-# Collect static files
-python manage.py collectstatic
+## 🆘 Support & Troubleshooting
 
-# Create database dump
-python manage.py dumpdata > data_backup.json
+### Common Issues
 
-# Load database dump
-python manage.py loaddata data_backup.json
-```
+1. **Database locked error**:
+   ```bash
+   # Stop all processes accessing the database
+   # Or increase timeout in production settings
+   ```
 
-## 📚 Additional Resources
+2. **Permission errors**:
+   ```bash
+   # Ensure proper file permissions
+   chmod 755 db/
+   chmod 644 db/*.sqlite3
+   ```
 
-- [Django Documentation](https://docs.djangoproject.com/)
-- [Django REST Framework](https://www.django-rest-framework.org/)
-- [SQLite Documentation](https://www.sqlite.org/docs.html)
-- [Python Virtual Environments Guide](https://docs.python.org/3/tutorial/venv.html)
+3. **Dataset not found**:
+   ```bash
+   # Check dataset path and run validation
+   python manage.py validate --verbose
+   ```
 
-## 🤝 Getting Help
+### Support Links
+- **API Documentation**: http://localhost:8000/api/docs/
+- **Health Check**: http://localhost:8000/api/healthz/
+- **Admin Panel**: http://localhost:8000/admin/
 
-If you encounter issues during setup:
-
-1. **Check this README** - Most common issues are covered here
-2. **Ask Team Members** - Don't hesitate to reach out
-3. **Create GitHub Issue** - For bugs or feature requests
-4. **Check Django Documentation** - For deeper technical issues
-
-## 🔐 Security Notes
-
-- **Never commit .env files** - They contain sensitive information
-- **Use strong passwords** - For admin accounts  
-- **Keep dependencies updated** - Run `pip list --outdated` regularly
-- **Use HTTPS in production** - This setup is for development only
-
-## 🎯 Why SQLite?
-
-**SQLite Benefits:**
-- ✅ **Zero Configuration** - No database server setup required
-- ✅ **File-based** - Easy to backup and move
-- ✅ **Fast** - Excellent performance for most applications
-- ✅ **Reliable** - ACID-compliant, battle-tested
-- ✅ **Cross-platform** - Works on all operating systems
-- ✅ **Perfect for Development** - Start coding immediately
-- ✅ **Production Ready** - Handles most real-world applications
-
-**When to consider alternatives:**
-- High concurrency (1000+ simultaneous users)
-- Multiple applications accessing same database
-- Large datasets (100GB+)
-- Complex analytical queries
-
-For most applications, SQLite is the perfect choice!
-
----
-
-**🎉 Congratulations!** You should now have a fully functional UniQuest backend development environment.
-
-Happy coding! 🚀
+For issues and questions, please use the GitHub issue tracker.
