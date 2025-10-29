@@ -1,10 +1,25 @@
 import React from "react";
+import Header from '../components/Header';
+import { useUser, useClerk } from '@clerk/clerk-react'
+import { Link, useNavigate } from 'react-router-dom'
+import Footer from '../components/Footer';
 import { 
   BookOpen, Calendar, Clock, CheckCircle, AlertCircle, 
   TrendingUp, FileText, GraduationCap, Bell 
 } from "lucide-react";
 
 export default function Dashboard() {
+  const { isLoaded, isSignedIn, user } = useUser()
+  const clerk = useClerk()
+  const navigate = useNavigate()
+
+  const displayName =
+    user?.firstName ||
+    user?.fullName ||
+    user?.primaryEmailAddress?.emailAddress ||
+    user?.emailAddresses?.[0]?.emailAddress ||
+    'User'
+
   // Dummy data
   const journeySteps = [
     { id: 1, title: 'Profile Setup', status: 'completed', description: 'Complete your academic profile' },
@@ -51,10 +66,12 @@ export default function Dashboard() {
   };
 
   return (
+    <>
+    <Header />
     <div className="space-y-6 p-6 mx-40">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-6 text-white">
-        <h1 className="text-2xl font-bold mb-2">Welcome back, Sarah!</h1>
+        <h1 className="text-2xl font-bold mb-2">Welcome back, {displayName}!</h1>
         <p className="text-blue-100 mb-4">You're making great progress on your university journey. Keep it up!</p>
         <div className="w-full bg-blue-200 h-2 rounded-full overflow-hidden">
           <div className="bg-white h-2" style={{ width: `${overallProgress}%` }} />
@@ -176,5 +193,7 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 }
