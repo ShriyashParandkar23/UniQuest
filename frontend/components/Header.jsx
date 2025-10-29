@@ -48,9 +48,9 @@ export default function Header() {
               <a href="#scholarships" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
                 Scholarships
               </a>
-              <a href="#ai-assistant" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+              <Link to="/ai-chat" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
                 AI Assistant
-              </a>
+              </Link>
             </nav>
           ) : (
             <div className="hidden md:flex items-center space-x-6" aria-hidden>
