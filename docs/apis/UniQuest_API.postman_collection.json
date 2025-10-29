@@ -1,0 +1,748 @@
+{
+	"info": {
+		"_postman_id": "uniquest-api-collection-2025",
+		"name": "UniQuest API",
+		"description": "Complete API collection for UniQuest - AI-powered university recommendation system.\n\n## Authentication\nMost endpoints require JWT authentication. First login to get access token, then use it in Authorization header.\n\n## Base URL\n- Development: http://localhost:8000\n- Production: https://api.uniquest.com\n\n## Variables\nSet these in your Postman environment:\n- `base_url`: API base URL\n- `access_token`: JWT access token (auto-set after login)\n- `refresh_token`: JWT refresh token (auto-set after login)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Auto-save tokens to environment",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"access_token\", jsonData.access);",
+									"    pm.environment.set(\"refresh_token\", jsonData.refresh);",
+									"    console.log(\"✅ Tokens saved to environment\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"student@example.com\",\n  \"password\": \"demo123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login",
+								""
+							]
+						},
+						"description": "Login with email and password to receive JWT access and refresh tokens.\n\n**Demo Credentials:**\n- Email: alice@example.com\n- Password: demo123"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Auto-save new access token",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"access_token\", jsonData.access);",
+									"    console.log(\"✅ Access token refreshed\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/refresh/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh",
+								""
+							]
+						},
+						"description": "Get a new access token using refresh token when access token expires."
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"token\": \"{{access_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/verify/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"verify",
+								""
+							]
+						},
+						"description": "Verify if a JWT token is valid and not expired."
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints for JWT token management."
+		},
+		{
+			"name": "Student Profile",
+			"item": [
+				{
+					"name": "Get My Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/students/me/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"students",
+								"me",
+								""
+							]
+						},
+						"description": "Get the authenticated user's student profile including GPA, test scores, interests, and preferences."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"gpa\": 3.8,\n  \"test_scores\": {\n    \"TOEFL\": 110,\n    \"GRE_Q\": 165,\n    \"GRE_V\": 158,\n    \"GRE_AWA\": 4.0\n  },\n  \"interests\": \"Computer Science, Artificial Intelligence, Machine Learning\",\n  \"goals\": \"Pursue PhD in AI and work on cutting-edge research\",\n  \"preferred_regions\": [\"US\", \"CA\", \"UK\"],\n  \"country_preference\": \"US\",\n  \"budget_min\": 0,\n  \"budget_max\": 50000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/students/me/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"students",
+								"me",
+								""
+							]
+						},
+						"description": "Create a new student profile with academic information and preferences."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"gpa\": 3.9,\n  \"test_scores\": {\n    \"TOEFL\": 115,\n    \"GRE_Q\": 168,\n    \"GRE_V\": 160\n  },\n  \"budget_max\": 60000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/students/me/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"students",
+								"me",
+								""
+							]
+						},
+						"description": "Update specific fields in the student profile. Only provided fields will be updated."
+					},
+					"response": []
+				}
+			],
+			"description": "Manage student academic profiles and personal information."
+		},
+		{
+			"name": "Preferences",
+			"item": [
+				{
+					"name": "Get Preferences",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/students/preferences/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"students",
+								"preferences",
+								""
+							]
+						},
+						"description": "Get user's recommendation weights and preferences."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Preferences",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"weights\": {\n    \"academics\": 0.35,\n    \"interests\": 0.25,\n    \"career\": 0.20,\n    \"location\": 0.10,\n    \"budget\": 0.05,\n    \"ranking\": 0.03,\n    \"research_activity\": 0.02\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/students/preferences/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"students",
+								"preferences",
+								""
+							]
+						},
+						"description": "Update recommendation weights. Weights should sum to 1.0 (100%).\n\n**Default Weights:**\n- academics: 0.30 (30%)\n- interests: 0.20 (20%)\n- career: 0.20 (20%)\n- location: 0.10 (10%)\n- budget: 0.10 (10%)\n- ranking: 0.05 (5%)\n- research_activity: 0.05 (5%)"
+					},
+					"response": []
+				}
+			],
+			"description": "Manage user preferences for recommendation weights."
+		},
+		{
+			"name": "Recommendations",
+			"item": [
+				{
+					"name": "Generate Recommendations",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"filters\": {\n    \"countries\": [\"US\", \"CA\", \"UK\"],\n    \"max_rank\": 500,\n    \"budget_max\": 50000\n  },\n  \"weights\": {\n    \"academics\": 0.30,\n    \"interests\": 0.20,\n    \"career\": 0.20,\n    \"location\": 0.15,\n    \"budget\": 0.10,\n    \"ranking\": 0.03,\n    \"research_activity\": 0.02\n  },\n  \"top_n\": 20\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/recommendations/run/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"recommendations",
+								"run",
+								""
+							]
+						},
+						"description": "Generate personalized university recommendations using LLM-powered scoring and rationale generation.\n\n**This is the main recommendation endpoint!**\n\nThe system will:\n1. Query dataset with filters (40 candidates)\n2. Score each university using LLM (parallel)\n3. Apply user weights\n4. Generate personalized rationales for top 20\n5. Save recommendations to database\n\n**Response time:** 2-3 seconds (with parallel LLM calls)"
+					},
+					"response": []
+				},
+				{
+					"name": "List My Recommendations",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/recommendations/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"recommendations",
+								""
+							]
+						},
+						"description": "Get user's recommendation history. Shows all previously generated recommendations with scores and rationales."
+					},
+					"response": []
+				}
+			],
+			"description": "Generate and manage university recommendations."
+		},
+		{
+			"name": "Feedback",
+			"item": [
+				{
+					"name": "Submit Feedback",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"rating\": 5,\n  \"notes\": \"Perfect match! This university aligns perfectly with my research interests in AI and has excellent faculty in machine learning.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/feedback/recommendations/:recommendation_id/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"feedback",
+								"recommendations",
+								":recommendation_id",
+								""
+							],
+							"variable": [
+								{
+									"key": "recommendation_id",
+									"value": "1",
+									"description": "ID of the recommendation to provide feedback for"
+								}
+							]
+						},
+						"description": "Submit feedback for a specific recommendation.\n\n**Rating:** 1-5 stars\n- 1-2: Negative feedback\n- 3: Neutral\n- 4-5: Positive feedback\n\n**Notes:** Optional detailed feedback"
+					},
+					"response": []
+				},
+				{
+					"name": "List My Feedback",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/feedback/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"feedback",
+								""
+							]
+						},
+						"description": "Get all feedback submitted by the user."
+					},
+					"response": []
+				}
+			],
+			"description": "Provide and manage feedback on recommendations."
+		},
+		{
+			"name": "Universities",
+			"item": [
+				{
+					"name": "Search Universities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/universities/?q=stanford&country=US&has_rank=true&limit=20&offset=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"universities",
+								""
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "stanford",
+									"description": "Search query (university name)"
+								},
+								{
+									"key": "country",
+									"value": "US",
+									"description": "Country code (ISO 2-letter)"
+								},
+								{
+									"key": "has_rank",
+									"value": "true",
+									"description": "Filter universities with rankings"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Number of results per page"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Pagination offset"
+								}
+							]
+						},
+						"description": "Search universities in the dataset with various filters.\n\n**Query Parameters:**\n- `q`: Search term (matches university name)\n- `country`: ISO 2-letter country code (US, CA, UK, etc.)\n- `has_rank`: Filter universities with Webometrics ranking\n- `limit`: Results per page (default: 20)\n- `offset`: Pagination offset (default: 0)\n- `ordering`: Sort field (display_name, country, rank, works_count)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get University Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/universities/:university_id/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"universities",
+								":university_id",
+								""
+							],
+							"variable": [
+								{
+									"key": "university_id",
+									"value": "I123456789",
+									"description": "OpenAlex institution ID"
+								}
+							]
+						},
+						"description": "Get detailed information about a specific university by its OpenAlex ID."
+					},
+					"response": []
+				}
+			],
+			"description": "Search and browse universities from the dataset."
+		},
+		{
+			"name": "Dataset Management",
+			"item": [
+				{
+					"name": "List Ingestion Runs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/ingestion/runs/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"ingestion",
+								"runs",
+								""
+							]
+						},
+						"description": "Get history of dataset ingestion runs with status, statistics, and errors.\n\n**Status values:**\n- PENDING: Queued but not started\n- RUNNING: Currently processing\n- SUCCESS: Completed successfully\n- FAILED: Failed with errors\n- CANCELLED: Manually cancelled"
+					},
+					"response": []
+				}
+			],
+			"description": "Admin endpoints for dataset management."
+		},
+		{
+			"name": "System",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/healthz/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"healthz",
+								""
+							]
+						},
+						"description": "Check if the API is running and healthy. Returns system status and dataset information.\n\n**No authentication required.**"
+					},
+					"response": []
+				}
+			],
+			"description": "System health and status endpoints."
+		},
+		{
+			"name": "API Documentation",
+			"item": [
+				{
+					"name": "OpenAPI Schema",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/schema/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"schema",
+								""
+							]
+						},
+						"description": "Get the OpenAPI 3.0 schema in JSON format."
+					},
+					"response": []
+				},
+				{
+					"name": "Swagger UI",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/docs/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"docs",
+								""
+							]
+						},
+						"description": "Interactive API documentation with Swagger UI. Open in browser."
+					},
+					"response": []
+				},
+				{
+					"name": "ReDoc",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/redoc/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"redoc",
+								""
+							]
+						},
+						"description": "Alternative API documentation with ReDoc. Open in browser."
+					},
+					"response": []
+				}
+			],
+			"description": "API documentation endpoints."
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global pre-request script",
+					"console.log('🚀 Making request to:', pm.request.url.toString());"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test script",
+					"if (pm.response.code >= 200 && pm.response.code < 300) {",
+					"    console.log('✅ Request successful:', pm.response.code);",
+					"} else if (pm.response.code >= 400) {",
+					"    console.log('❌ Request failed:', pm.response.code);",
+					"    console.log('Error:', pm.response.json());",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+
