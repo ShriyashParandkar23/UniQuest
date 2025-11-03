@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import {
   Send,
   Bot,
@@ -117,6 +119,8 @@ export default function AIChatAssistant() {
   const handleSuggestionClick = (s) => setInputValue(s);
 
   return (
+    <>
+    <Header />
     <div className="space-y-6 p-6 mx-40">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-6 text-white text-center shadow">
@@ -285,5 +289,7 @@ export default function AIChatAssistant() {
         </div>
       </div>
     </div>
+    <Footer />
+    </>
   );
 }
