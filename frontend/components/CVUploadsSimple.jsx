@@ -2,9 +2,10 @@ import { useState, useRef } from 'react';
 import { Button } from '../src/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../src/components/ui/card';
 import { Alert, AlertDescription } from '../src/components/ui/alert';
+import { DialogTitle,DialogContent } from '../src/components/ui/dialog';
 import { Upload, FileText, CheckCircle, AlertCircle, X, Sparkles } from 'lucide-react';
 
-export function CVUploadSimple({ onDataExtracted, onClose }) {
+export default function CVUploadsSimple({ onDataExtracted, onClose }) {
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
