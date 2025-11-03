@@ -9,7 +9,7 @@ import { Slider } from '../src/components/ui/slider';
 import { Dialog, DialogContent, DialogTrigger } from '../src/components/ui/dialog';
 import { Textarea } from '../src/components/ui/textarea';
 import Header from '../components/Header';
-//import { CVUploadSimple } from './CVUploadSimple';
+import CVUploadSimple from '../components/CVUploadSimple';
 import { GraduationCap, MapPin, DollarSign, Target, Upload, Sparkles, Plus, Trash2, Briefcase, Award } from 'lucide-react';
 
 const programs = [
@@ -260,10 +260,10 @@ export default function UserProfilePage({ onProfileSubmit }) {
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl">
-                {/* <CVUploadSimple 
+                <CVUploadSimple 
                   onDataExtracted={handleCVDataExtracted}
                   onClose={() => setShowCVUpload(false)}
-                /> */}
+                />
               </DialogContent>
             </Dialog>
             <p className="text-sm text-gray-500 mt-2">
