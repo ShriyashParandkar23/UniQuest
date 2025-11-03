@@ -10,6 +10,8 @@ import { Dialog, DialogContent, DialogTrigger } from '../src/components/ui/dialo
 import { Textarea } from '../src/components/ui/textarea';
 import Header from '../components/Header';
 import CVUploadsSimple from '/components/CVUploadsSimple';
+import UniversityResults from './UniversityResults';
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { GraduationCap, MapPin, DollarSign, Target, Upload, Sparkles, Plus, Trash2, Briefcase, Award } from 'lucide-react';
 
 const programs = [
@@ -57,7 +59,11 @@ const availableExams = [
   { id: 'duolingo', name: 'Duolingo English Test', min: 10, max: 160, step: 5, description: 'Duolingo English Test', defaultScore: 110 },
 ];
 
-export default function UserProfilePage({ onProfileSubmit }) {
+export default function UserProfilePage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const clerkUser = location.state?.clerkUser
+  
   const [profile, setProfile] = useState({
     academicLevel: '',
     academicBackground: [],
@@ -77,9 +83,9 @@ export default function UserProfilePage({ onProfileSubmit }) {
   const [selectedExams, setSelectedExams] = useState([]);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    onProfileSubmit(profile);
-  };
+  e.preventDefault();
+  navigate('/UniversityResults', { state: { profile } });
+};
 
   const handleProgramChange = (program, checked) => {
     if (checked) {
