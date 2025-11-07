@@ -6,8 +6,7 @@ All the complex LLM integration logic is replaced with simple API call TODOs.
 """
 
 import logging
-import json
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 from django.core.cache import cache
 
 logger = logging.getLogger(__name__)
