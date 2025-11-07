@@ -265,7 +265,7 @@ export default function UserProfilePage() {
                   <Sparkles className="h-4 w-4 ml-2 text-yellow-500" />
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl">
+              <DialogContent className="max-w-2xl bg-white p-2">
                 <CVUploadsSimple 
                   onDataExtracted={handleCVDataExtracted}
                   onClose={() => setShowCVUpload(false)}
