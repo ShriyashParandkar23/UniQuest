@@ -7,6 +7,7 @@ import Login from '../pages/Login';
 import UserProfilePage from '../pages/UserProfilePage';
 import UniversityResults from '../pages/UniversityResults';
 import { UserProfile } from '@clerk/clerk-react';
+import { ScholarshipsScreen } from '../pages/ScholarshipScreen';
 
 
 
@@ -21,6 +22,7 @@ const App = () => {
     <Route path='/login' element={ <Login/> }/>
     <Route path='/UserProfile' element={ <UserProfilePage/> }/>
     <Route path='/UniversityResults' element={ <UniversityResults/> }/>
+    <Route path='/ScholarshipScreen' element={ <ScholarshipsScreen/> }/>
 
     </Routes>
  

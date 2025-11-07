@@ -45,9 +45,9 @@ export default function Header() {
               <Link to="/UserProfile" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
                 Universities
               </Link>
-              <a href="#scholarships" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+              <Link to="/ScholarshipScreen" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
                 Scholarships
-              </a>
+              </Link>
               <Link to="/ai-chat" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
                 AI Assistant
               </Link>
