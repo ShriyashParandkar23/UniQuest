@@ -79,7 +79,7 @@ export function ScholarshipsScreen() {
   return (
     <>
     <Header />
-    <div className="space-y-6 ">
+    <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
         <h1 className="text-3xl font-bold mb-2 mt-4">Scholarship Opportunities</h1>
@@ -140,6 +140,7 @@ export function ScholarshipsScreen() {
       </div>
 
       {/* Search and Filters */}
+      <div className="p-5">
       <Card>
         <CardContent className="p-6">
           <div className="grid lg:grid-cols-6 gap-4">
@@ -211,6 +212,7 @@ export function ScholarshipsScreen() {
           </div>
         </CardContent>
       </Card>
+      </div>
 
       {/* Results */}
       <div className="flex items-center justify-between mr-4 ml-4">

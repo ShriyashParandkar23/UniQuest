@@ -155,15 +155,15 @@ export default function Dashboard() {
           <h2 className="font-bold text-lg mb-2">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-3">
             {[
-              { icon: BookOpen, label: "Find Universities" },
-              { icon: FileText, label: "SOP Helper" },
-              { icon: TrendingUp, label: "Scholarships" },
-              { icon: GraduationCap, label: "Ask UniQuest" },
+              { icon: BookOpen, label: "Find Universities",path:"/UserProfile" },
+              { icon: FileText, label: "SOP Helper", path: "/ai-chat" },
+              { icon: TrendingUp, label: "Scholarships", path:"/ScholarshipScreen" },
+              { icon: GraduationCap, label: "Ask UniQuest", path:"/ai-chat" },
             ].map((action, idx) => (
-              <button key={idx} className="flex flex-col items-center p-4 border rounded hover:bg-gray-50">
+              <Link key={idx} to={action.path} className="flex flex-col items-center p-4 border rounded hover:bg-gray-50">
                 <action.icon className="h-5 w-5 mb-1" />
                 <span className="text-xs">{action.label}</span>
-              </button>
+              </Link>
             ))}
           </div>
         </div>
