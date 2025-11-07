@@ -79,17 +79,17 @@ export function ScholarshipsScreen() {
   return (
     <>
     <Header />
-    <div className="space-y-6">
+    <div className="space-y-6 ">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-3xl font-bold mb-2">Scholarship Opportunities</h1>
+        <h1 className="text-3xl font-bold mb-2 mt-4">Scholarship Opportunities</h1>
         <p className="text-gray-600">
           Discover funding opportunities to support your international education
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid md:grid-cols-4 gap-4">
+      <div className="grid md:grid-cols-4 gap-4 mr-4 ml-4">
         <Card>
           <CardContent className="flex items-center p-6">
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -213,7 +213,7 @@ export function ScholarshipsScreen() {
       </Card>
 
       {/* Results */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mr-4 ml-4">
         <p className="text-gray-600">
           Showing {filteredScholarships.length} scholarship{filteredScholarships.length !== 1 ? 's' : ''}
         </p>
@@ -224,7 +224,7 @@ export function ScholarshipsScreen() {
       </div>
 
       {/* Scholarship Cards */}
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-6 mb-4 ml-4 mr-4">
         {filteredScholarships.map((scholarship) => {
           const daysLeft = getDaysUntilDeadline(scholarship.deadline);
           const isDeadlineSoon = daysLeft <= 30 && daysLeft > 0;
