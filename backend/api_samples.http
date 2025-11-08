@@ -1,0 +1,154 @@
+# UniQuest API Sample Requests
+
+## Authentication
+
+### Login
+POST http://localhost:8000/api/auth/login/
+Content-Type: application/json
+
+{
+  "email": "demo@uniquest.com",
+  "password": "demo123"
+}
+
+### Refresh Token
+POST http://localhost:8000/api/auth/refresh/
+Content-Type: application/json
+
+{
+  "refresh": "{{refresh_token}}"
+}
+
+## Student Profile
+
+### Get Profile
+GET http://localhost:8000/api/students/me/
+Authorization: Bearer {{access_token}}
+
+### Update Profile
+PATCH http://localhost:8000/api/students/me/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "academicLevel": "bachelors",
+  "gpa": 3.7,
+  "interests": "Computer Science, Machine Learning, AI",
+  "goals": "Pursue PhD in AI and contribute to research",
+  "countryPreference": "US",
+  "budgetMin": 25000,
+  "budgetMax": 75000,
+  "testScores": [
+    {
+      "examName": "GRE",
+      "score": 325,
+      "testDate": "2024-05"
+    },
+    {
+      "examName": "TOEFL",
+      "score": 105,
+      "testDate": "2024-04"
+    }
+  ],
+  "preferredRegions": ["North America", "Europe"],
+  "preferredPrograms": ["Computer Science", "AI"]
+}
+
+## Preferences
+
+### Get Preferences
+GET http://localhost:8000/api/students/preferences/
+Authorization: Bearer {{access_token}}
+
+### Update Preferences
+PUT http://localhost:8000/api/students/preferences/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "weights": {
+    "academics": 0.35,
+    "interests": 0.25,
+    "career": 0.20,
+    "location": 0.10,
+    "budget": 0.05,
+    "ranking": 0.03,
+    "researchActivity": 0.02
+  }
+}
+
+## Universities
+
+### Search Universities
+GET http://localhost:8000/api/universities/?q=stanford&country=US&hasRank=true&limit=10
+Authorization: Bearer {{access_token}}
+
+### Get University Details
+GET http://localhost:8000/api/universities/https://openalex.org/I97018004
+Authorization: Bearer {{access_token}}
+
+### Search by Country
+GET http://localhost:8000/api/universities/?country=CA&ordering=rank&limit=20
+Authorization: Bearer {{access_token}}
+
+## Recommendations
+
+### Generate Recommendations
+POST http://localhost:8000/api/recommendations/run/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "filters": {
+    "countries": ["US"],
+    "maxRank": 1000,
+    "budgetMax": 50000
+  },
+  "weights": {
+    "academics": 0.4,
+    "researchActivity": 0.3,
+    "ranking": 0.2,
+    "location": 0.1
+  },
+  "topN": 15
+}
+
+### Get Recommendations
+GET http://localhost:8000/api/recommendations/?limit=20
+Authorization: Bearer {{access_token}}
+
+## Feedback
+
+### Provide Feedback
+POST http://localhost:8000/api/feedback/recommendations/1/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "rating": 5,
+  "notes": "Excellent recommendation! The university matches my research interests perfectly."
+}
+
+### List Feedback
+GET http://localhost:8000/api/feedback/
+Authorization: Bearer {{access_token}}
+
+## System
+
+### Health Check
+GET http://localhost:8000/api/healthz/
+
+### Ingestion Runs
+GET http://localhost:8000/api/ingestion/runs/
+Authorization: Bearer {{access_token}}
+
+## API Documentation
+
+### OpenAPI Schema
+GET http://localhost:8000/api/schema/
+
+### Swagger UI
+GET http://localhost:8000/api/docs/
+
+### ReDoc
+GET http://localhost:8000/api/redoc/

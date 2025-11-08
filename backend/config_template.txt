@@ -1,0 +1,10 @@
+# Environment Configuration Template
+# Copy this to .env file and update with your values
+
+# Django Configuration
+SECRET_KEY=your-secret-key-here-generate-a-new-one
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# SQLite database is used by default (no additional configuration needed)
+# Database file will be created automatically as 'db.sqlite3' in the backend directory

@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_ENVIRONMENT=dev
+      - DEBUG=True
+      - DB_NAME=db_dev.sqlite3
+    volumes:
+      - .:/app
+      - ./data:/data
+      - ./db:/app/db  # SQLite database persistence
+    restart: unless-stopped
