@@ -31,17 +31,27 @@ Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
 {
+  "academicLevel": "bachelors",
   "gpa": 3.7,
   "interests": "Computer Science, Machine Learning, AI",
   "goals": "Pursue PhD in AI and contribute to research",
-  "country_preference": "US",
-  "budget_min": 25000,
-  "budget_max": 75000,
-  "test_scores": {
-    "GRE": 325,
-    "TOEFL": 105
-  },
-  "preferred_regions": ["North America", "Europe"]
+  "countryPreference": "US",
+  "budgetMin": 25000,
+  "budgetMax": 75000,
+  "testScores": [
+    {
+      "examName": "GRE",
+      "score": 325,
+      "testDate": "2024-05"
+    },
+    {
+      "examName": "TOEFL",
+      "score": 105,
+      "testDate": "2024-04"
+    }
+  ],
+  "preferredRegions": ["North America", "Europe"],
+  "preferredPrograms": ["Computer Science", "AI"]
 }
 
 ## Preferences
@@ -63,14 +73,14 @@ Content-Type: application/json
     "location": 0.10,
     "budget": 0.05,
     "ranking": 0.03,
-    "research_activity": 0.02
+    "researchActivity": 0.02
   }
 }
 
 ## Universities
 
 ### Search Universities
-GET http://localhost:8000/api/universities/?q=stanford&country=US&has_rank=true&limit=10
+GET http://localhost:8000/api/universities/?q=stanford&country=US&hasRank=true&limit=10
 Authorization: Bearer {{access_token}}
 
 ### Get University Details
@@ -90,17 +100,17 @@ Content-Type: application/json
 
 {
   "filters": {
-    "country": "US",
-    "has_research": true,
-    "min_rank": 1000
+    "countries": ["US"],
+    "maxRank": 1000,
+    "budgetMax": 50000
   },
   "weights": {
     "academics": 0.4,
-    "research_activity": 0.3,
+    "researchActivity": 0.3,
     "ranking": 0.2,
     "location": 0.1
   },
-  "top_n": 15
+  "topN": 15
 }
 
 ### Get Recommendations

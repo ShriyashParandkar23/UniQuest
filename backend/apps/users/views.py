@@ -13,11 +13,14 @@ def user_profile(request):
     """Get current user profile."""
     user = request.user
     return Response({
-        'id': user.id,
-        'email': user.email,
-        'first_name': user.first_name,
-        'last_name': user.last_name,
-        'username': user.username,
-        'is_verified': user.is_verified,
-        'created_at': user.created_at,
+        'data': {
+            'id': user.id,
+            'email': user.email,
+            'firstName': user.first_name,
+            'lastName': user.last_name,
+            'username': user.username,
+            'isVerified': user.is_verified,
+            'createdAt': user.created_at,
+        },
+        'error': None
     })

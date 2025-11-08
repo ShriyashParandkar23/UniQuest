@@ -8,7 +8,7 @@ from .serializers import StudentProfileSerializer
 
 
 class StudentProfileView(generics.RetrieveUpdateAPIView):
-    """Get or update student profile for authenticated user."""
+    """Get or update student profile."""
     serializer_class = StudentProfileSerializer
     permission_classes = [IsAuthenticated]
     

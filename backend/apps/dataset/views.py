@@ -1,6 +1,6 @@
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from .models import IngestionRun
@@ -54,7 +54,7 @@ class IngestionRunListView(generics.ListAPIView):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def search_universities(request):
     """Search universities with filters."""
     try:
@@ -121,7 +121,7 @@ def search_universities(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def get_university(request, university_id):
     """Get a specific university by ID."""
     try:

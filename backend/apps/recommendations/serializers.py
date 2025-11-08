@@ -35,7 +35,7 @@ class RecommendationRequestSerializer(serializers.Serializer):
         default=20,
         min_value=1,
         max_value=100,
-        help_text="Number of top recommendations to return"
+        help_text="Number of top recommendations to return (camelCase: topN in JSON)"
     )
     
     def validate_filters(self, value):
@@ -53,7 +53,7 @@ class RecommendationRequestSerializer(serializers.Serializer):
         
         valid_factors = {
             'academics', 'interests', 'career', 'location', 
-            'budget', 'ranking', 'research_activity'
+            'budget', 'ranking', 'research_activity', 'researchActivity'
         }
         
         for factor, weight in value.items():

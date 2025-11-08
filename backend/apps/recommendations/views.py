@@ -76,6 +76,7 @@ def run_recommendations(request):
         validated_data = serializer.validated_data
         filters = validated_data.get('filters', {})
         weights = validated_data.get('weights', {})
+        # camelCase parser converts topN -> top_n automatically
         top_n = validated_data.get('top_n', 20)
         
         # Initialize recommendation service
