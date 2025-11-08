@@ -22,6 +22,72 @@ Complete reference for all UniQuest API endpoints.
 
 ## Authentication
 
+All protected endpoints require JWT (JSON Web Token) authentication. You must include a valid access token in the `Authorization` header for each request.
+
+### How Authentication Works
+
+1. **Login** to get access and refresh tokens
+2. **Include the access token** in the `Authorization` header for protected endpoints
+3. **Refresh the token** when it expires using the refresh token
+
+### Using the Authorization Header
+
+For all protected endpoints, include the access token in the request header:
+
+```http
+Authorization: Bearer {access_token}
+```
+
+**Example:**
+```http
+GET /api/students/me/
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI5ODQ4MDAwLCJpYXQiOjE3Mjk4NDQ0MDAsImp0aSI6IjEyMzQ1Njc4OTAiLCJ1c2VyX2lkIjoxfQ.abc123def456...
+```
+
+### Token Expiration
+
+- **Access Token**: Valid for 30 minutes (default)
+- **Refresh Token**: Valid for 24 hours (default)
+
+When the access token expires, use the refresh token to get a new access token without logging in again.
+
+### Protected vs Public Endpoints
+
+**Protected Endpoints** (require authentication):
+- All student profile endpoints
+- All preferences endpoints
+- All recommendations endpoints
+- All feedback endpoints
+- User profile endpoint
+- Ingestion runs endpoint
+
+**Public Endpoints** (no authentication required):
+- Health check (`/api/healthz/`)
+- University search (`/api/universities/`)
+- University details (`/api/universities/{id}/`)
+- API documentation (`/api/docs/`, `/api/redoc/`, `/api/schema/`)
+- Authentication endpoints (`/api/auth/login/`, `/api/auth/refresh/`, `/api/auth/verify/`)
+
+### Error Responses
+
+If authentication fails, you'll receive a `401 Unauthorized` response:
+
+```json
+{
+  "detail": "Authentication credentials were not provided."
+}
+```
+
+or
+
+```json
+{
+  "detail": "Given token not valid for any token type"
+}
+```
+
+---
+
 ### Login
 Get JWT access and refresh tokens.
 
@@ -41,14 +107,30 @@ Content-Type: application/json
 **Response (200 OK):**
 ```json
 {
-  "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
-  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+  "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI5ODQ4MDAwLCJpYXQiOjE3Mjk4NDQ0MDAsImp0aSI6IjEyMzQ1Njc4OTAiLCJ1c2VyX2lkIjoxfQ.abc123def456...",
+  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcyOTkzMDgwMCwiaWF0IjoxNzI5ODQ0NDAwLCJqdGkiOiIxMjM0NTY3ODkwIiwidXNlcl9pZCI6MX0.xyz789uvw012..."
 }
 ```
 
+**Field Descriptions:**
+- `access` (string) - Access token to include in `Authorization: Bearer {access_token}` header
+- `refresh` (string) - Refresh token to get new access tokens when current one expires
+
 **Errors:**
-- `400 Bad Request` - Invalid credentials
+- `400 Bad Request` - Invalid request format
 - `401 Unauthorized` - Wrong email/password
+
+**Example Usage:**
+```bash
+# Login
+curl -X POST http://localhost:8000/api/auth/login/ \
+  -H "Content-Type: application/json" \
+  -d '{"email": "alice@example.com", "password": "demo123"}'
+
+# Use the access token in subsequent requests
+curl -X GET http://localhost:8000/api/students/me/ \
+  -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+```
 
 ---
 
@@ -70,8 +152,23 @@ Content-Type: application/json
 **Response (200 OK):**
 ```json
 {
-  "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+  "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI5ODQ4MDAwLCJpYXQiOjE3Mjk4NDQ0MDAsImp0aSI6IjEyMzQ1Njc4OTAiLCJ1c2VyX2lkIjoxfQ.abc123def456..."
 }
+```
+
+**Field Descriptions:**
+- `access` (string) - New access token (use this to replace your expired token)
+
+**Errors:**
+- `400 Bad Request` - Invalid refresh token format
+- `401 Unauthorized` - Refresh token is invalid or expired
+
+**Example Usage:**
+```bash
+# Refresh access token
+curl -X POST http://localhost:8000/api/auth/refresh/ \
+  -H "Content-Type: application/json" \
+  -d '{"refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."}'
 ```
 
 ---
@@ -97,7 +194,16 @@ Content-Type: application/json
 ```
 
 **Errors:**
+- `400 Bad Request` - Invalid token format
 - `401 Unauthorized` - Token is invalid or expired
+
+**Example Usage:**
+```bash
+# Verify token
+curl -X POST http://localhost:8000/api/auth/verify/ \
+  -H "Content-Type: application/json" \
+  -d '{"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."}'
+```
 
 ---
 
