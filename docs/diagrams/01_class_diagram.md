@@ -22,12 +22,19 @@ classDiagram
     class StudentProfile {
         +int id
         +int user_id
+        +string academic_level
         +decimal gpa
+        +json academic_background
+        +json work_experience
         +json test_scores
         +text interests
+        +json preferred_programs
         +text goals
         +json preferred_regions
+        +json preferred_countries
         +string country_preference
+        +json campus_preference
+        +string budget_currency
         +decimal budget_min
         +decimal budget_max
         +datetime created_at
@@ -35,7 +42,7 @@ classDiagram
         +__str__() string
         +interests_list() list
         +get_test_score(test_name) float
-        +set_test_score(test_name, score) void
+        +set_test_score(test_name, score, test_date) void
     }
 
     %% Preferences
@@ -173,9 +180,12 @@ classDiagram
 
 **StudentProfile**
 - One-to-one with User
-- Stores academic information (GPA, test scores)
-- Contains interests, goals, and preferences
-- Budget and location preferences
+- Stores academic information (academic level, GPA, academic background, work experience)
+- Test scores stored as array (database: exam_name, score, test_date; API: examName, score, testDate)
+- Contains interests, preferred programs, and career goals
+- Location preferences (regions, countries, campus type)
+- Budget information with currency support
+- **Note:** Database uses snake_case, API JSON uses camelCase (automatic conversion via djangorestframework-camel-case)
 
 **Preference**
 - One-to-one with User

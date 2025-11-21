@@ -22,6 +22,72 @@ Complete reference for all UniQuest API endpoints.
 
 ## Authentication
 
+All protected endpoints require JWT (JSON Web Token) authentication. You must include a valid access token in the `Authorization` header for each request.
+
+### How Authentication Works
+
+1. **Login** to get access and refresh tokens
+2. **Include the access token** in the `Authorization` header for protected endpoints
+3. **Refresh the token** when it expires using the refresh token
+
+### Using the Authorization Header
+
+For all protected endpoints, include the access token in the request header:
+
+```http
+Authorization: Bearer {access_token}
+```
+
+**Example:**
+```http
+GET /api/students/me/
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI5ODQ4MDAwLCJpYXQiOjE3Mjk4NDQ0MDAsImp0aSI6IjEyMzQ1Njc4OTAiLCJ1c2VyX2lkIjoxfQ.abc123def456...
+```
+
+### Token Expiration
+
+- **Access Token**: Valid for 30 minutes (default)
+- **Refresh Token**: Valid for 24 hours (default)
+
+When the access token expires, use the refresh token to get a new access token without logging in again.
+
+### Protected vs Public Endpoints
+
+**Protected Endpoints** (require authentication):
+- All student profile endpoints
+- All preferences endpoints
+- All recommendations endpoints
+- All feedback endpoints
+- User profile endpoint
+- Ingestion runs endpoint
+
+**Public Endpoints** (no authentication required):
+- Health check (`/api/healthz/`)
+- University search (`/api/universities/`)
+- University details (`/api/universities/{id}/`)
+- API documentation (`/api/docs/`, `/api/redoc/`, `/api/schema/`)
+- Authentication endpoints (`/api/auth/login/`, `/api/auth/refresh/`, `/api/auth/verify/`)
+
+### Error Responses
+
+If authentication fails, you'll receive a `401 Unauthorized` response:
+
+```json
+{
+  "detail": "Authentication credentials were not provided."
+}
+```
+
+or
+
+```json
+{
+  "detail": "Given token not valid for any token type"
+}
+```
+
+---
+
 ### Login
 Get JWT access and refresh tokens.
 
@@ -41,14 +107,30 @@ Content-Type: application/json
 **Response (200 OK):**
 ```json
 {
-  "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
-  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+  "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI5ODQ4MDAwLCJpYXQiOjE3Mjk4NDQ0MDAsImp0aSI6IjEyMzQ1Njc4OTAiLCJ1c2VyX2lkIjoxfQ.abc123def456...",
+  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcyOTkzMDgwMCwiaWF0IjoxNzI5ODQ0NDAwLCJqdGkiOiIxMjM0NTY3ODkwIiwidXNlcl9pZCI6MX0.xyz789uvw012..."
 }
 ```
 
+**Field Descriptions:**
+- `access` (string) - Access token to include in `Authorization: Bearer {access_token}` header
+- `refresh` (string) - Refresh token to get new access tokens when current one expires
+
 **Errors:**
-- `400 Bad Request` - Invalid credentials
+- `400 Bad Request` - Invalid request format
 - `401 Unauthorized` - Wrong email/password
+
+**Example Usage:**
+```bash
+# Login
+curl -X POST http://localhost:8000/api/auth/login/ \
+  -H "Content-Type: application/json" \
+  -d '{"email": "alice@example.com", "password": "demo123"}'
+
+# Use the access token in subsequent requests
+curl -X GET http://localhost:8000/api/students/me/ \
+  -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+```
 
 ---
 
@@ -70,8 +152,23 @@ Content-Type: application/json
 **Response (200 OK):**
 ```json
 {
-  "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+  "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI5ODQ4MDAwLCJpYXQiOjE3Mjk4NDQ0MDAsImp0aSI6IjEyMzQ1Njc4OTAiLCJ1c2VyX2lkIjoxfQ.abc123def456..."
 }
+```
+
+**Field Descriptions:**
+- `access` (string) - New access token (use this to replace your expired token)
+
+**Errors:**
+- `400 Bad Request` - Invalid refresh token format
+- `401 Unauthorized` - Refresh token is invalid or expired
+
+**Example Usage:**
+```bash
+# Refresh access token
+curl -X POST http://localhost:8000/api/auth/refresh/ \
+  -H "Content-Type: application/json" \
+  -d '{"refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."}'
 ```
 
 ---
@@ -97,7 +194,16 @@ Content-Type: application/json
 ```
 
 **Errors:**
+- `400 Bad Request` - Invalid token format
 - `401 Unauthorized` - Token is invalid or expired
+
+**Example Usage:**
+```bash
+# Verify token
+curl -X POST http://localhost:8000/api/auth/verify/ \
+  -H "Content-Type: application/json" \
+  -d '{"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."}'
+```
 
 ---
 
@@ -115,27 +221,47 @@ Authorization: Bearer {access_token}
 ```json
 {
   "id": 1,
-  "user": 1,
+  "academicLevel": "bachelors",
   "gpa": 3.8,
-  "test_scores": {
-    "TOEFL": 110,
-    "GRE_Q": 165,
-    "GRE_V": 158,
-    "GRE_AWA": 4.0
-  },
+  "academicBackground": [
+    {
+      "id": "101",
+      "level": "high-school",
+      "course": "Science Stream (Physics, Chemistry, Mathematics)",
+      "institution": "Dublin High School",
+      "yearOfCompletion": "2024",
+      "gpa": 3.8
+    }
+  ],
+  "workExperience": [],
+  "testScores": [
+    {
+      "examName": "IELTS",
+      "score": 7.5,
+      "testDate": "2024-06"
+    },
+    {
+      "examName": "SAT",
+      "score": 1350,
+      "testDate": "2024-03"
+    }
+  ],
   "interests": "Computer Science, AI, Machine Learning",
-  "goals": "Pursue PhD in AI",
-  "preferred_regions": ["US", "CA", "UK"],
-  "country_preference": "US",
-  "budget_min": 0,
-  "budget_max": 50000,
-  "created_at": "2025-10-28T10:00:00Z",
-  "updated_at": "2025-10-28T10:00:00Z"
+  "preferredPrograms": ["Computer Science", "Engineering", "Mathematics"],
+  "goals": "To study computer science and specialize in artificial intelligence and software engineering.",
+  "preferredRegions": ["US", "CA", "UK"],
+  "preferredCountries": ["United States", "Canada", "United Kingdom"],
+  "countryPreference": "US",
+  "campusPreference": ["Urban"],
+  "budgetCurrency": "USD",
+  "budgetMin": 0,
+  "budgetMax": 40000,
+  "createdAt": "2025-10-28T10:00:00Z",
+  "updatedAt": "2025-10-28T10:00:00Z"
 }
 ```
 
 **Errors:**
-- `401 Unauthorized` - Missing or invalid token
 - `404 Not Found` - Profile doesn't exist
 
 ---
@@ -145,26 +271,47 @@ Create a new student profile.
 
 ```http
 POST /api/students/me/
-Authorization: Bearer {access_token}
 Content-Type: application/json
 ```
 
 **Request Body:**
 ```json
 {
+  "academicLevel": "bachelors",
   "gpa": 3.8,
-  "test_scores": {
-    "TOEFL": 110,
-    "GRE_Q": 165,
-    "GRE_V": 158,
-    "GRE_AWA": 4.0
-  },
+  "academicBackground": [
+    {
+      "id": "101",
+      "level": "high-school",
+      "course": "Science Stream (Physics, Chemistry, Mathematics)",
+      "institution": "Dublin High School",
+      "yearOfCompletion": "2024",
+      "gpa": 3.8
+    }
+  ],
+  "workExperience": [],
+  "testScores": [
+    {
+      "examName": "IELTS",
+      "score": 7.5,
+      "testDate": "2024-06"
+    },
+    {
+      "examName": "SAT",
+      "score": 1350,
+      "testDate": "2024-03"
+    }
+  ],
   "interests": "Computer Science, AI, Machine Learning",
-  "goals": "Pursue PhD in AI and work on cutting-edge research",
-  "preferred_regions": ["US", "CA", "UK"],
-  "country_preference": "US",
-  "budget_min": 0,
-  "budget_max": 50000
+  "preferredPrograms": ["Computer Science", "Engineering", "Mathematics"],
+  "goals": "To study computer science and specialize in artificial intelligence and software engineering.",
+  "preferredRegions": ["US", "CA", "UK"],
+  "preferredCountries": ["United States", "Canada", "United Kingdom"],
+  "countryPreference": "US",
+  "campusPreference": ["Urban"],
+  "budgetCurrency": "USD",
+  "budgetMin": 0,
+  "budgetMax": 40000
 }
 ```
 
@@ -179,14 +326,30 @@ Content-Type: application/json
 ```
 
 **Field Descriptions:**
-- `gpa` (decimal, 0.0-4.0) - GPA on 4.0 scale
-- `test_scores` (object) - Test scores (TOEFL, GRE, SAT, etc.)
-- `interests` (string) - Academic and career interests
-- `goals` (string) - Educational and career goals
-- `preferred_regions` (array) - ISO 2-letter country codes
-- `country_preference` (string) - Primary country preference
-- `budget_min` (decimal) - Minimum budget in USD
-- `budget_max` (decimal) - Maximum budget in USD
+- `academicLevel` (string, optional) - Current or target academic level. Options: `high-school`, `bachelors`, `masters`, `phd`, `other`
+- `gpa` (decimal, 0.0-4.0, optional) - GPA on 4.0 scale
+- `academicBackground` (array, optional) - Array of academic background entries. Each entry must have:
+  - `id` (string) - Unique identifier
+  - `level` (string) - Academic level (e.g., "high-school", "bachelors")
+  - `course` (string) - Course or stream name
+  - `institution` (string) - Institution name
+  - `yearOfCompletion` (string) - Year of completion
+  - `gpa` (decimal, optional) - GPA for this background entry
+- `workExperience` (array, optional) - Array of work experience entries
+- `testScores` (array, optional) - Array of test scores. Each entry must have:
+  - `examName` (string) - Name of the exam (e.g., "IELTS", "SAT", "GRE", "TOEFL")
+  - `score` (number/string) - Test score
+  - `testDate` (string, optional) - Date of test in YYYY-MM format
+- `interests` (string, optional) - Academic and career interests (free text)
+- `preferredPrograms` (array, optional) - Array of preferred academic programs/fields of study (e.g., ["Computer Science", "Engineering"])
+- `goals` (string, optional) - Educational and career goals (free text)
+- `preferredRegions` (array, optional) - ISO 2-letter country codes (e.g., ["US", "CA", "UK"])
+- `preferredCountries` (array, optional) - Array of preferred countries (full names or ISO codes)
+- `countryPreference` (string, optional) - ISO 2-letter country code for primary preference
+- `campusPreference` (array, optional) - Array of campus preferences. Options: `Urban`, `Suburban`, `Rural`, `Any`
+- `budgetCurrency` (string, optional) - ISO 3-letter currency code (default: "USD"). Examples: "USD", "EUR", "GBP"
+- `budgetMin` (decimal, optional) - Minimum budget
+- `budgetMax` (decimal, optional) - Maximum budget (maxTuition)
 
 ---
 
@@ -203,10 +366,15 @@ Content-Type: application/json
 ```json
 {
   "gpa": 3.9,
-  "test_scores": {
-    "TOEFL": 115
-  },
-  "budget_max": 60000
+  "testScores": [
+    {
+      "examName": "TOEFL",
+      "score": 115,
+      "testDate": "2024-08"
+    }
+  ],
+  "budgetMax": 60000,
+  "preferredPrograms": ["Computer Science", "Data Science"]
 }
 ```
 
@@ -244,10 +412,10 @@ Authorization: Bearer {access_token}
     "location": 0.10,
     "budget": 0.10,
     "ranking": 0.05,
-    "research_activity": 0.05
+    "researchActivity": 0.05
   },
-  "created_at": "2025-10-28T10:00:00Z",
-  "updated_at": "2025-10-28T10:00:00Z"
+  "createdAt": "2025-10-28T10:00:00Z",
+  "updatedAt": "2025-10-28T10:00:00Z"
 }
 ```
 
@@ -272,7 +440,7 @@ Content-Type: application/json
     "location": 0.10,
     "budget": 0.05,
     "ranking": 0.03,
-    "research_activity": 0.02
+    "researchActivity": 0.02
   }
 }
 ```
@@ -284,7 +452,7 @@ Content-Type: application/json
 - `location` (0.0-1.0) - Location preference importance
 - `budget` (0.0-1.0) - Budget fit importance
 - `ranking` (0.0-1.0) - University ranking importance
-- `research_activity` (0.0-1.0) - Research output importance
+- `researchActivity` (0.0-1.0) - Research output importance
 
 **Note:** Weights should sum to 1.0 (100%)
 
@@ -294,7 +462,7 @@ Content-Type: application/json
   "id": 1,
   "user": 1,
   "weights": { ... },
-  "updated_at": "2025-10-28T11:00:00Z"
+  "updatedAt": "2025-10-28T11:00:00Z"
 }
 ```
 
@@ -318,8 +486,8 @@ Content-Type: application/json
 {
   "filters": {
     "countries": ["US", "CA", "UK"],
-    "max_rank": 500,
-    "budget_max": 50000
+    "maxRank": 500,
+    "budgetMax": 50000
   },
   "weights": {
     "academics": 0.30,
@@ -328,22 +496,22 @@ Content-Type: application/json
     "location": 0.15,
     "budget": 0.10,
     "ranking": 0.03,
-    "research_activity": 0.02
+    "researchActivity": 0.02
   },
-  "top_n": 20
+  "topN": 20
 }
 ```
 
 **Filter Options:**
 - `countries` (array) - ISO 2-letter country codes
-- `max_rank` (integer) - Maximum Webometrics ranking
-- `budget_max` (decimal) - Maximum budget in USD
+- `maxRank` (integer) - Maximum Webometrics ranking
+- `budgetMax` (decimal) - Maximum budget in USD
 - `search` (string) - Search term for university name
 
 **Request Parameters:**
 - `filters` (object) - Filters to apply to dataset
 - `weights` (object, optional) - Custom weights (uses saved preferences if not provided)
-- `top_n` (integer, optional) - Number of recommendations (default: 20)
+- `topN` (integer, optional) - Number of recommendations (default: 20)
 
 **Response (200 OK):**
 ```json
@@ -351,15 +519,15 @@ Content-Type: application/json
   {
     "id": 1,
     "user": 1,
-    "university_ref": "I123456789",
-    "display_name": "Stanford University",
-    "country_code": "US",
+    "universityRef": "I123456789",
+    "displayName": "Stanford University",
+    "countryCode": "US",
     "score": 0.92,
     "rationale": "Stanford's world-class Computer Science program aligns perfectly with your AI research interests. With a GPA of 3.8 and strong GRE scores, you're a competitive candidate. The university's extensive research output (150,000+ publications) and Silicon Valley location offer unparalleled opportunities for ML research and industry connections.",
     "program": null,
     "filters": { ... },
     "weights": { ... },
-    "generated_at": "2025-10-28T12:00:00Z"
+    "generatedAt": "2025-10-28T12:00:00Z"
   },
   // ... 19 more recommendations
 ]
@@ -391,11 +559,11 @@ Authorization: Bearer {access_token}
 [
   {
     "id": 1,
-    "university_ref": "I123456789",
-    "display_name": "Stanford University",
+    "universityRef": "I123456789",
+    "displayName": "Stanford University",
     "score": 0.92,
     "rationale": "...",
-    "generated_at": "2025-10-28T12:00:00Z"
+    "generatedAt": "2025-10-28T12:00:00Z"
   },
   // ... more recommendations
 ]
@@ -440,7 +608,7 @@ Content-Type: application/json
   "recommendation": 1,
   "rating": 5,
   "notes": "Perfect match!...",
-  "created_at": "2025-10-28T13:00:00Z"
+  "createdAt": "2025-10-28T13:00:00Z"
 }
 ```
 
@@ -465,13 +633,13 @@ Authorization: Bearer {access_token}
     "id": 1,
     "recommendation": {
       "id": 1,
-      "university_ref": "I123456789",
-      "display_name": "Stanford University",
+      "universityRef": "I123456789",
+      "displayName": "Stanford University",
       "score": 0.92
     },
     "rating": 5,
     "notes": "Perfect match!",
-    "created_at": "2025-10-28T13:00:00Z"
+    "createdAt": "2025-10-28T13:00:00Z"
   },
   // ... more feedback
 ]
@@ -485,16 +653,16 @@ Authorization: Bearer {access_token}
 Search universities in the dataset.
 
 ```http
-GET /api/universities/?q=stanford&country=US&has_rank=true&limit=20&offset=0
+GET /api/universities/?q=stanford&country=US&hasRank=true&limit=20&offset=0
 ```
 
 **Query Parameters:**
 - `q` (string, optional) - Search term (matches university name)
 - `country` (string, optional) - ISO 2-letter country code
-- `has_rank` (boolean, optional) - Filter universities with rankings
+- `hasRank` (boolean, optional) - Filter universities with rankings
 - `limit` (integer, optional) - Results per page (default: 20)
 - `offset` (integer, optional) - Pagination offset (default: 0)
-- `ordering` (string, optional) - Sort field: `display_name`, `country`, `rank`, `works_count`
+- `ordering` (string, optional) - Sort field: `displayName`, `country`, `rank`, `worksCount`
 
 **Response (200 OK):**
 ```json
@@ -505,16 +673,16 @@ GET /api/universities/?q=stanford&country=US&has_rank=true&limit=20&offset=0
   "results": [
     {
       "id": "I123456789",
-      "display_name": "Stanford University",
-      "canonical_name": "stanford-university",
-      "country_code": "US",
-      "homepage_url": "https://www.stanford.edu",
-      "webometrics_rank": 2,
-      "works_count": 150000,
-      "cited_by_count": 5000000,
-      "geo_latitude": 37.4275,
-      "geo_longitude": -122.1697,
-      "has_rank": true
+      "displayName": "Stanford University",
+      "canonicalName": "stanford-university",
+      "countryCode": "US",
+      "homepageUrl": "https://www.stanford.edu",
+      "webometricsRank": 2,
+      "worksCount": 150000,
+      "citedByCount": 5000000,
+      "geoLatitude": 37.4275,
+      "geoLongitude": -122.1697,
+      "hasRank": true
     },
     // ... more universities
   ]
@@ -528,6 +696,7 @@ Get detailed information about a specific university.
 
 ```http
 GET /api/universities/{university_id}/
+Authorization: Bearer {access_token}
 ```
 
 **Path Parameters:**
@@ -537,16 +706,16 @@ GET /api/universities/{university_id}/
 ```json
 {
   "id": "I123456789",
-  "display_name": "Stanford University",
-  "canonical_name": "stanford-university",
-  "country_code": "US",
-  "homepage_url": "https://www.stanford.edu",
-  "webometrics_rank": 2,
-  "works_count": 150000,
-  "cited_by_count": 5000000,
-  "geo_latitude": 37.4275,
-  "geo_longitude": -122.1697,
-  "has_rank": true
+  "displayName": "Stanford University",
+  "canonicalName": "stanford-university",
+  "countryCode": "US",
+  "homepageUrl": "https://www.stanford.edu",
+  "webometricsRank": 2,
+  "worksCount": 150000,
+  "citedByCount": 5000000,
+  "geoLatitude": 37.4275,
+  "geoLongitude": -122.1697,
+  "hasRank": true
 }
 ```
 
@@ -573,12 +742,12 @@ Authorization: Bearer {access_token}
     "source": "openalex",
     "version": "2025.09",
     "status": "SUCCESS",
-    "started_at": "2025-10-01T00:00:00Z",
-    "finished_at": "2025-10-01T00:30:00Z",
+    "startedAt": "2025-10-01T00:00:00Z",
+    "finishedAt": "2025-10-01T00:30:00Z",
     "stats": {
-      "total_records": 25000,
+      "totalRecords": 25000,
       "countries": 180,
-      "ranked_institutions": 5000
+      "rankedInstitutions": 5000
     },
     "error": ""
   },
@@ -614,7 +783,7 @@ GET /api/healthz/
   "dataset": {
     "version": "2025.09",
     "institutions": 25000,
-    "last_updated": "2025-10-01T00:00:00Z"
+    "lastUpdated": "2025-10-01T00:00:00Z"
   },
   "timestamp": "2025-10-28T14:00:00Z"
 }
@@ -724,14 +893,14 @@ GET /api/universities/?limit=20&offset=40
 ### Filtering
 Use query parameters:
 ```http
-GET /api/universities/?country=US&has_rank=true
+GET /api/universities/?country=US&hasRank=true
 ```
 
 ### Sorting
 Use `ordering` parameter:
 ```http
 GET /api/universities/?ordering=rank
-GET /api/universities/?ordering=-works_count  # Descending
+GET /api/universities/?ordering=-worksCount  # Descending
 ```
 
 ---
@@ -762,19 +931,16 @@ curl -X POST http://localhost:8000/api/auth/login/ \
 
 # 2. Create Profile
 curl -X POST http://localhost:8000/api/students/me/ \
-  -H "Authorization: Bearer {access_token}" \
   -H "Content-Type: application/json" \
-  -d '{"gpa": 3.8, "test_scores": {"TOEFL": 110}, ...}'
+  -d '{"gpa": 3.8, "testScores": [{"examName": "TOEFL", "score": 110}], ...}'
 
 # 3. Generate Recommendations
 curl -X POST http://localhost:8000/api/recommendations/run/ \
-  -H "Authorization: Bearer {access_token}" \
   -H "Content-Type: application/json" \
-  -d '{"filters": {"countries": ["US"]}, "top_n": 20}'
+  -d '{"filters": {"countries": ["US"]}, "topN": 20}'
 
 # 4. Submit Feedback
 curl -X POST http://localhost:8000/api/feedback/recommendations/1/ \
-  -H "Authorization: Bearer {access_token}" \
   -H "Content-Type: application/json" \
   -d '{"rating": 5, "notes": "Perfect match!"}'
 ```

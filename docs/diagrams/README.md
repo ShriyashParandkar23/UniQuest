@@ -14,6 +14,18 @@ Shows the complete data model and service architecture including:
 
 **Use for:** Understanding database schema, API response structure, backend architecture
 
+### 1.1 Database Schema Diagram
+**File:** `11_database_schema.md`
+
+Detailed database schema with:
+- Complete table structures with all columns
+- Data types, constraints, and indexes
+- Foreign key relationships
+- JSON field structures and examples
+- Migration notes
+
+**Use for:** Database design reference, understanding field types, migration planning
+
 ---
 
 ### 2. Sequence Diagrams
@@ -325,6 +337,7 @@ Track which diagrams are most useful:
 | Need to... | Use this diagram |
 |------------|------------------|
 | Understand data model | `01_class_diagram.md` |
+| Database schema details | `11_database_schema.md` |
 | Debug login issues | `02_sequence_user_registration.md` |
 | Explain CV parsing | `03_sequence_cv_upload.md` |
 | Optimize recommendations | `04_sequence_generate_recommendations.md` |
