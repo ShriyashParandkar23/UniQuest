@@ -26,6 +26,19 @@ Detailed database schema with:
 
 **Use for:** Database design reference, understanding field types, migration planning
 
+### 1.2 High-Level Design (System Design)
+**File:** `12_hld_system_design.md`
+
+Complete system architecture overview in Excalidraw style:
+- All layers: Client, API Gateway, Business Logic, Services, Data, External, Admin
+- Component interactions and data flow
+- Technology stack details
+- Design patterns and principles
+- Security and scalability considerations
+- Deployment architecture
+
+**Use for:** System design presentations, architecture reviews, onboarding new developers, technical documentation
+
 ---
 
 ### 2. Sequence Diagrams
@@ -238,11 +251,13 @@ graph TB
 | Diagram Type | Count | Total Nodes | Complexity |
 |--------------|-------|-------------|------------|
 | Class | 1 | 9 classes | Medium |
+| Database Schema | 1 | 6 tables | Low |
+| HLD System Design | 1 | ~30 components | Medium |
 | Sequence | 4 | ~200 interactions | High |
 | Use Case | 1 | ~40 use cases | Medium |
 | Activity | 2 | ~80 nodes | High |
 | Swimlane | 2 | ~100 nodes | Very High |
-| **Total** | **10** | **~500 nodes** | **High** |
+| **Total** | **12** | **~500 nodes** | **High** |
 
 ---
 
@@ -338,6 +353,7 @@ Track which diagrams are most useful:
 |------------|------------------|
 | Understand data model | `01_class_diagram.md` |
 | Database schema details | `11_database_schema.md` |
+| System architecture overview | `12_hld_system_design.md` |
 | Debug login issues | `02_sequence_user_registration.md` |
 | Explain CV parsing | `03_sequence_cv_upload.md` |
 | Optimize recommendations | `04_sequence_generate_recommendations.md` |
