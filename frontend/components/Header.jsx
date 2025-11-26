@@ -33,7 +33,7 @@ export default function Header() {
         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
           <span className="text-white font-bold text-sm">UQ</span>
         </div>
-        <span className="text-xl font-semibold">UniQuest</span>
+        <span className="text-xl font-semibold"><Link to="/">UniQuest</Link></span>
       </a>
 
       {/* Navigation */}
