@@ -9,6 +9,7 @@ import { Slider } from '../src/components/ui/slider';
 import { Dialog, DialogContent, DialogTrigger } from '../src/components/ui/dialog';
 import { Textarea } from '../src/components/ui/textarea';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 import CVUploadsSimple from '/components/CVUploadsSimple';
 import UniversityResults from './UniversityResults';
 import { Link, useNavigate, useLocation } from 'react-router-dom'
@@ -720,14 +721,14 @@ export default function UserProfilePage() {
             <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="currency">Currency</Label>
-                <Select 
+                <Select className="bg-white" 
                   value={profile.budgetCurrency} 
                   onValueChange={(value) => setProfile(prev => ({ ...prev, budgetCurrency: value }))}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select currency" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     {currencies.map(currency => (
                       <SelectItem key={currency.code} value={currency.code}>
                         {currency.symbol} {currency.code} - {currency.name}
@@ -762,6 +763,7 @@ export default function UserProfilePage() {
         </form>
       </div>
     </section>
+    <Footer />
     </>
   );
 }

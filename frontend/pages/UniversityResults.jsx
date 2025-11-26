@@ -7,6 +7,7 @@ import UniversityCard from '../components/UniversityCard';
 import { filterUniversities } from '../data/universities';
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import Header from '/components/Header';
+import Footer from '/components/Footer';
 import { Filter, SortAsc, Users, MapPin, DollarSign } from 'lucide-react';
 
 export default function UniversityResults({ 
@@ -18,7 +19,7 @@ export default function UniversityResults({
   const location = useLocation();
 
   const handleNewSearch = () => {
-  navigate('/profile', { state: { profile } });
+  navigate('/UserProfile', { state: { profile } });
 };
 
   
@@ -164,7 +165,7 @@ if (!profile) {
               <SelectContent>
                 <SelectItem value="all">All Countries</SelectItem>
                 {countries.map(country => (
-                  <SelectItem key={country} value={country}>
+                  <SelectItem className="bg-white" key={country} value={country}>
                     {country}
                   </SelectItem>
                 ))}
@@ -232,6 +233,7 @@ if (!profile) {
         )}
       </div>
     </section>
+    <Footer />
     </>
   );
 }
